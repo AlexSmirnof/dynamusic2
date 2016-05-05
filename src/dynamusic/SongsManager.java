@@ -64,7 +64,7 @@ public class SongsManager extends atg.nucleus.GenericService {
   
   // -- Property: TransactionManager --
   
-  /**
+/**
    * Sets the transactionManager property, used to manage transactions 
    * in the handler. 
    **/

@@ -37,19 +37,17 @@
           <font face="Verdana,Geneva,Arial" size="-1">
           
           <!-- *** Start page content *** -->
-          
+
             <table width="560">
               <tr>
                 <td>
                 <dsp:droplet name="/atg/targeting/RepositoryLookup">
-                  <dsp:param name="id" param="itemId"/>
+                  <dsp:param name="id" bean="/atg/userprofiling/Profile.id"/>
                   <dsp:param name="itemDescriptor" value="user"/>
                   <dsp:param bean="/atg/userprofiling/ProfileAdapterRepository" name="repository"/>
 
                   <dsp:oparam name="output">
-                  <dsp:droplet name="/atg/dynamo/droplet/Switch">
-                    <dsp:param name="value" param="element.shareProfile"/>
-                    <dsp:oparam name="true">
+                
                      <table>
                        <tr>
                          <td>
@@ -62,6 +60,10 @@
                         <tr>
                          <td> Email address: </td>
                          <td><b><dsp:valueof param="element.email"/>    </b></td>
+                        </tr>
+                        <tr>
+                           <td>Location</td>
+                           <td><b><dsp:valueof param="element.homeAddress.state"/></b></td>
                         </tr>
                         <tr>
                          <td>Favorite genres </td>
@@ -77,59 +79,46 @@
                           <dsp:oparam name="output">
                             <li><dsp:valueof param="element"/><br>
                           </dsp:oparam>
-                          <dsp:oparam name="empty">
-                            This user has not specified any interests.
-                          </dsp:oparam>
-                        </dsp:droplet>
-                        </td>
-                        </tr>
+                          </dsp:droplet>
                         <tr>
                           <td>User info</td>
                           <td><b><dsp:valueof param="element.info"/></b></td>
                         </tr>
+                        <tr><td><hr>Loyalty Points</td></tr>
                         <tr>
-                           <td>Location</td>
-                           <td><b><dsp:valueof param="element.homeAddress.state"/></b></td>
-                        </tr>
+                          <td>Total Amount:</td>
+                          <td><b><dsp:valueof param="element.loyaltyAmount"/></b></td>
+                        </tr>  
                         <tr>
-                           <td>Playlists</td>
-                           <td><b>
-                           <dsp:droplet name="/atg/dynamo/droplet/ForEach">
-                             <dsp:param name="array" param="element.playlists"/>
-                             <dsp:oparam name="output">
-                             <dsp:droplet name="/atg/dynamo/droplet/Switch">
-                               <dsp:param name="value" param="element.publish"/>
-                               <dsp:oparam name="true">
-                                 <dsp:a href="playlistDetails.jsp">
-                                   <dsp:param name="itemId" param="element.repositoryId"/>
-                                   <dsp:valueof param="element.name">Unnamed</dsp:valueof><br>     
-                                 </dsp:a>
-                               </dsp:oparam>
-                             </dsp:droplet>
-
-                             </dsp:oparam>
-                             <dsp:oparam name="empty">
-                               No play lists defined.
-                             </dsp:oparam>
-                           </dsp:droplet>
-
-                           </b>
+                          <td valign="top">Loyalty Transactions:</td>
+                          <td>
+                            <dsp:droplet name="/atg/dynamo/droplet/Range">
+                              <dsp:param name="array" param="element.loyaltyTransactions"/>
+                              <dsp:param name="howMany" value="3"/>
+                              <dsp:param name="sortProperties" value="-created"/>
+                              <dsp:oparam name="outputStart"><ul></dsp:oparam>
+                              <dsp:oparam name="outputEnd"></ul></dsp:oparam>
+                              <dsp:oparam name="output">
+                                <li>
+                                  Amount:<dsp:valueof param="element.amount"/>;<br>
+                                  Date:<dsp:valueof param="element.created"/>;<br>
+                                  Description:<dsp:valueof param="element.description"/>;<br>
+                                  <br>
+                                </li>
+                              </dsp:oparam>
+                              <dsp:oparam name="empty">No transactions</dsp:oparam>
+                            </dsp:droplet>
                           </td>
                         </tr>
                         <tr>
                           <td><dsp:a href="sendmessage.jsp">
                             <dsp:param name="userid" param="itemId"/>
-                              <br>Send <dsp:valueof param="element.firstName"/> mail
+                              <br><hr>Send <dsp:valueof param="element.firstName"/> mail
                          </dsp:a>
                          </td>
                        </tr>
                      </table>
-                    </dsp:oparam>
-                    <dsp:oparam name="false">
-                      You are not authorized to view information on that user.
-                    </dsp:oparam>
-                  </dsp:droplet>
-
+     
                   </dsp:oparam>
                   <dsp:oparam name="empty">
                      No such user found.    
